@@ -213,9 +213,7 @@ namespace AlgoStockInventory.Controllers
                 {
                     _context.Products.Add(obj);
                     _context.SaveChanges();
-
-
-
+ 
                     _res.Result = true;
                     _res.Data = obj;
                     _res.Message = "Product Entry Created Successfully";
@@ -258,6 +256,97 @@ namespace AlgoStockInventory.Controllers
         }
         #endregion
 
+        [HttpPatch("EditProduct")]
+        public ApiResponse EditProduct([FromBody] Products obj) 
+        {
+            ApiResponse _res = new ApiResponse();
+            if (!ModelState.IsValid)
+            {
+                _res.Result = false;
+                _res.Message = "Validateion Error";
+                return _res;
+            }
+            try
+            {
+                 var isProductExist = _context.Products.SingleOrDefault(m => m.productId == obj.productId);
+
+                if (isProductExist!= null)
+                {
+                    isProductExist.productName = obj.productName;
+                    isProductExist.productDetails = obj.productDetails;
+                    isProductExist.price = obj.price;
+                    _context.SaveChanges();
+
+                    _res.Result = true;
+                    _res.Message = "Product Edit Details Saved Successfully";
+                }
+                else
+                {
+                    _res.Result = false;
+                    _res.Message = "Product with ID = "+obj.productId +"do not exit.";
+
+
+                }
+                return _res;
+
+            }
+            catch (Exception ex)
+            {
+                _res.Result = false;
+                _res.Message = ex.Message;
+                return _res;
+            }
+
+        }
+
+        [HttpDelete("DeleteProduct")]
+        public ApiResponse DeleteProduct([FromBody] Products obj)
+        {
+            ApiResponse _res = new ApiResponse();
+            if (!ModelState.IsValid)
+            {
+                _res.Result = false;
+                _res.Message = "Validateion Error";
+                return _res;
+            }
+            try
+            {
+                var isProductExist = _context.Products.SingleOrDefault(m => m.productId == obj.productId);
+                var isStocksExist = _context.Stocks.SingleOrDefault(m => m.productId == obj.productId);
+                //var isStockSaleExist = _context.StockSale.SingleOrDefault(m => m.productId == obj.productId);
+                //var isStockPurchaseExist = _context.StockPurchases.SingleOrDefault(m => m.productId == obj.productId);
+
+                if(isStocksExist !=null)
+                {
+                    _res.Result = false;
+                    _res.Message = $"Product cannot be deleted as product with ID = {obj.productId} have Stock Quantity {isStocksExist.quantity}.";
+                }
+
+               else if (isProductExist != null)
+                {
+                    _context.Products.Remove(isProductExist);
+                    _context.SaveChanges();
+                    _res.Result = true;
+                    _res.Message = "Product Removed Successfully";
+                }
+                else
+                {
+                    _res.Result = false;
+                    _res.Message = "Product with ID = " + obj.productId + "do not exit.";
+
+
+                }
+                return _res;
+
+            }
+            catch (Exception ex)
+            {
+                _res.Result = false;
+                _res.Message = ex.Message;
+                return _res;
+            }
+
+        }
 
         #region Stock API
 
