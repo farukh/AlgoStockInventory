@@ -13,7 +13,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<AlgoStockDbContext>(options=>options.UseSqlServer(
-    builder.Configuration.GetConnectionString("DefaultConnection")));
+//builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Configuration.GetConnectionString("ServerConnection")));
 
 // Add services to the container.
 builder.Services.AddCors(options =>

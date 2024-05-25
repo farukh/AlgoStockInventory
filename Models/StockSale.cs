@@ -14,7 +14,6 @@ namespace AlgoStockInventory.Models
         public string customerName { get; set; }
 
         public string mobileNo { get; set; }
-
         public DateTime saleDate { get; set; }
         public int productId { get; set; }
         public int quantity { get; set; }

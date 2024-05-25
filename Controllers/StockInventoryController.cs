@@ -178,6 +178,8 @@ namespace AlgoStockInventory.Controllers
                                totalAmount = sale.totalAmount,
                                saleId = sale.saleId,
                                productName = product.productName,
+                               customerName = sale.customerName
+
                            }).OrderByDescending(m => m.saleId).ToList();
                 _res.Result = true;
                 _res.Data = all;
@@ -254,7 +256,7 @@ namespace AlgoStockInventory.Controllers
             }
 
         }
-        #endregion
+       
 
         [HttpPatch("EditProduct")]
         public ApiResponse EditProduct([FromBody] Products obj) 
@@ -300,26 +302,26 @@ namespace AlgoStockInventory.Controllers
         }
 
         [HttpDelete("DeleteProduct")]
-        public ApiResponse DeleteProduct([FromBody] Products obj)
+        public ApiResponse DeleteProduct(int id)
         {
             ApiResponse _res = new ApiResponse();
-            if (!ModelState.IsValid)
+            if (id == 0)
             {
                 _res.Result = false;
-                _res.Message = "Validateion Error";
+                _res.Message = "Product ID Required";
                 return _res;
             }
             try
             {
-                var isProductExist = _context.Products.SingleOrDefault(m => m.productId == obj.productId);
-                var isStocksExist = _context.Stocks.SingleOrDefault(m => m.productId == obj.productId);
+                var isProductExist = _context.Products.SingleOrDefault(m => m.productId == id);
+                var isStocksExist = _context.Stocks.SingleOrDefault(m => m.productId == id);
                 //var isStockSaleExist = _context.StockSale.SingleOrDefault(m => m.productId == obj.productId);
                 //var isStockPurchaseExist = _context.StockPurchases.SingleOrDefault(m => m.productId == obj.productId);
 
                 if(isStocksExist !=null)
                 {
                     _res.Result = false;
-                    _res.Message = $"Product cannot be deleted as product with ID = {obj.productId} have Stock Quantity {isStocksExist.quantity}.";
+                    _res.Message = $"Product cannot be deleted as product with ID = {id} have Stock Quantity {isStocksExist.quantity}.";
                 }
 
                else if (isProductExist != null)
@@ -332,7 +334,7 @@ namespace AlgoStockInventory.Controllers
                 else
                 {
                     _res.Result = false;
-                    _res.Message = "Product with ID = " + obj.productId + "do not exit.";
+                    _res.Message = "Product with ID = " + id+ "do not exit.";
 
 
                 }
@@ -347,7 +349,7 @@ namespace AlgoStockInventory.Controllers
             }
 
         }
-
+        #endregion
         #region Stock API
 
         [HttpGet("GetAllStock")]
