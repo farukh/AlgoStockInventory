@@ -91,7 +91,7 @@ namespace AlgoStockInventory.Controllers
                                productId = purchase.productId,
                                purchaseDate = purchase.purchaseDate,
                                purchaseId = purchase.purchaseId,
-                               supplierName = purchase.suplierName,
+                               supplierName = purchase.supplierName,
                                productName = product.productName,
                            }).OrderByDescending(m => m.purchaseId).ToList();
                 _res.Result = true;

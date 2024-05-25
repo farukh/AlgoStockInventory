@@ -15,7 +15,7 @@ namespace AlgoStockInventory.Models
 
         public int quantity { get; set; }
 
-        public string suplierName { get; set; }
+        public string supplierName { get; set; }
         public double invoiceAmount { get; set; }
         public string invoiceNo { get; set; }
 
